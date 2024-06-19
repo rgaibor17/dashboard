@@ -41,9 +41,12 @@ function App() {
       </Grid>
 
       <Grid xs={12} sm={2} md={2} lg={2}>
-        <Indicator title='Precipitación' subtitle='Probabilidad' value={0.13} />
-        <br/>
-        <Summary/>
+        <Grid xs={12} lg={12} sx={{paddingBottom: "5%"}}>
+          <Indicator title='Precipitación' subtitle='Probabilidad' value={0.13} />
+        </Grid>
+        <Grid lg={12} sx={{paddingBottom: "5%"}}>
+          <Summary/>
+        </Grid>
       </Grid>
 
       <Grid xs={12} md={10} lg={10}>
