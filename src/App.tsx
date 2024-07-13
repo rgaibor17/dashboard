@@ -13,8 +13,15 @@ function App() {
   // const [count, setCount] = useState(0)
 
   {/* Variable de estado y función de actualización */}
-
-  let [indicators, setIndicators] = useState([])
+  {/*
+    Solución para asignación de indicatorsElements a indicators mediante función de actualización
+    let array:any[] = [], useState(array) || useState<any[]>([])
+    any[] no era asignable a never[], se debe especificar el tipado dentro del Hook
+  */}
+  let [indicators, setIndicators] = useState<any[]>([])
+  
+  // 2.1 Variables de estado para dataTable (rangeHours, windDirection)  
+  let [rowsTable, setRowsTable] = useState<any[]>([])
 
   {/* Hook: useEffect */}
 
@@ -23,44 +30,42 @@ function App() {
 
   useEffect( ()=>{
     (async ()=>{
-      {/* 1. Comente el código anterior con el Request */}
+      {/* 1.1 Código anterior con el Request comentado */}
 
       // {/* Request */ }
-
-      //let API_KEY = "cd62221f8e7d8fd76c7cc5cb5d7878e5"
+      // let API_KEY = "cd62221f8e7d8fd76c7cc5cb5d7878e5"
       // let response = await fetch(`https://api.openweathermap.org/data/2.5/forecast?q=Guayaquil&mode=xml&appid=${API_KEY}`)
       // let savedTextXML = await response.text();
 
+      {/* 1.2 Del LocalStorage, se obtiene el valor de las claves openWeatherMap y expiringTime */}
 
-      {/* 2. Del LocalStorage, obtiene el valor de las claves openWeatherMap y expiringTime */}
-
-      let savedTextXML = localStorage.getItem("openWeatherMap")
+      let savedTextXML = localStorage.getItem("openWeatherMap")!
       let expiringTime = localStorage.getItem("expiringTime")
 
-      {/* 3. Obtenga la estampa de tiempo actual */}
+      {/* 1.3 Estampa de tiempo actual */}
 
       let nowTime = (new Date()).getTime();
 
-      {/* 4. Realiza la petición asicrónica cuando: 
+      {/* 1.4 Se realiza la petición asicrónica cuando: 
           (1) La estampa de tiempo de expiración (expiringTime) es nula, o  
           (2) La estampa de tiempo actual es mayor al tiempo de expiración */}
 
       if(expiringTime === null || nowTime > parseInt(expiringTime)) {
 
-          {/* 5. Request */}
+          {/* 1.5 Request */}
 
           let API_KEY = "cd62221f8e7d8fd76c7cc5cb5d7878e5"
           let response = await fetch(`https://api.openweathermap.org/data/2.5/forecast?q=Guayaquil&mode=xml&appid=${API_KEY}`)
           savedTextXML = await response.text();
 
 
-          {/* 6. Diferencia de tiempo */}
+          {/* 1.6 Diferencia de tiempo */}
 
           let hours = 1
           let delay = hours * 3600000
 
 
-          {/* 7. En el LocalStorage, almacena texto en la clave openWeatherMap y la estampa de tiempo de expiración */}
+          {/* 1.7 En el LocalStorage, almacena texto en la clave openWeatherMap y la estampa de tiempo de expiración */}
 
           localStorage.setItem("openWeatherMap", savedTextXML)
           localStorage.setItem("expiringTime", (nowTime + delay ).toString() )
@@ -76,10 +81,7 @@ function App() {
 
       let dataToIndicators = new Array()
 
-      {/* 
-          Análisis, extracción y almacenamiento del contenido del XML 
-          en el arreglo de resultados
-      */}
+      {/* Análisis, extracción y almacenamiento del contenido del XML en el arreglo de resultados */}
 
       let location = xml.getElementsByTagName("location")[1]
       let name = xml.getElementsByTagName("name")[0].innerHTML
@@ -104,31 +106,32 @@ function App() {
       {/* Modificación de la variable de estado mediante la función de actualización */}
 
       setIndicators(indicatorsElements)
+      
+      // 2.2 Procesamiento de resultados según la estructura del documento XML
+      let arrayObjects = Array.from( xml.getElementsByTagName("time") ).map( (timeElement) =>  {
+
+        let rangeHours = timeElement.getAttribute("from")!.split("T")[1] + " - " + timeElement.getAttribute("to")!.split("T")[1]
+        let windDirection = timeElement.getElementsByTagName("windDirection")[0].getAttribute("deg") + " "+  timeElement.getElementsByTagName("windDirection")[0].getAttribute("code")
+
+        return { "rangeHours": rangeHours,"windDirection": windDirection }
+      })
+
+      arrayObjects = arrayObjects.slice(0,8)
+      setRowsTable(arrayObjects) // 2.3 Actualización de variable de estado rowsTable
+
     })()
   }, [] )
 
   return (
-    /*<Grid container spacing={5}>
-      <Grid xs={12} sm={4} md={3} lg={2}>1</Grid>
-      <Grid xs={6} sm={4} md={3} lg={2}>2</Grid>
-      <Grid xs={6} sm={4} md={3} lg={2}>3</Grid>
-      <Grid xs={12} sm={4} md={3} lg={2}>4</Grid>
-      <Grid xs={6} sm={4} md={6} lg={2}>5</Grid>
-      <Grid xs={6} sm={4} md={6} lg={2}>6</Grid>
-    </Grid>*/
-
     <Grid container spacing={5}>
       <Grid xs={12} sm={2} md={2} lg={2}>
         {indicators[0]}
-        {/*<Indicator title='Precipitación' subtitle='Probabilidad' value={0.13} />*/}
       </Grid>
       <Grid xs={12} sm={2} md={2} lg={2}>
         {indicators[1]}
-        {/*<Indicator title='Precipitación' subtitle='Probabilidad' value={0.13} />*/}
       </Grid>
       <Grid xs={12} sm={2} md={2} lg={2}>
         {indicators[2]}
-        {/*<Indicator title='Precipitación' subtitle='Probabilidad' value={0.13} />*/}
       </Grid>
       <Grid xs={12} sm={2} md={2} lg={2}>
         <Indicator title='Precipitación' subtitle='Probabilidad' value={0.13} />
@@ -150,7 +153,7 @@ function App() {
       </Grid>
 
       <Grid xs={12} md={10} lg={10}>
-	       <BasicTable />
+	       <BasicTable rows={rowsTable}></BasicTable> {/* Variable de estado enviada como prop del componente */}
       </Grid>
 
       <Grid xs={12} lg={2}>
@@ -160,6 +163,17 @@ function App() {
              <WeatherChart></WeatherChart>
       </Grid>
     </Grid>
+
+    /*
+      <Grid container spacing={5}>
+        <Grid xs={12} sm={4} md={3} lg={2}>1</Grid>
+        <Grid xs={6} sm={4} md={3} lg={2}>2</Grid>
+        <Grid xs={6} sm={4} md={3} lg={2}>3</Grid>
+        <Grid xs={12} sm={4} md={3} lg={2}>4</Grid>
+        <Grid xs={6} sm={4} md={6} lg={2}>5</Grid>
+        <Grid xs={6} sm={4} md={6} lg={2}>6</Grid>
+      </Grid>
+    */
   )
 }
 
