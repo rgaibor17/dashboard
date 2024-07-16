@@ -160,22 +160,16 @@ function App() {
 
   return (
     <Grid container spacing={5}>
-      <Grid xs={12} sm={2} md={2} lg={2}>
+      <Grid xs={12} sm={3} md={3} lg={3}>
         {indicators[0]}
       </Grid>
-      <Grid xs={12} sm={2} md={2} lg={2}>
+      <Grid xs={12} sm={3} md={3} lg={3}>
         {indicators[1]}
       </Grid>
-      <Grid xs={12} sm={2} md={2} lg={2}>
+      <Grid xs={12} sm={3} md={3} lg={3}>
         {indicators[2]}
       </Grid>
-      <Grid xs={12} sm={2} md={2} lg={2}>
-        <Indicator title='Precipitación' subtitle='Probabilidad' value={0.13} />
-      </Grid>
-      <Grid xs={12} sm={2} md={2} lg={2}>
-        <Indicator title='Precipitación' subtitle='Probabilidad' value={0.13} />
-      </Grid>
-      <Grid xs={12} sm={2} md={2} lg={2}>
+      <Grid xs={12} sm={3} md={3} lg={3}>
         <Indicator title='Precipitación' subtitle='Probabilidad' value={0.13} />
       </Grid>
 

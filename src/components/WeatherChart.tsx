@@ -23,6 +23,7 @@ export default function WeatherChart(chartData:Config) {
         title: "Reporte de Precipitación, Humedad y Nubosidad vs Hora para Guayaquil en las próximas horas",
         curveType: "function",
         legend: { position: "right" },
+        fontName:'Roboto'
     }
 
     {/* Datos de las variables meteorológicas */}
