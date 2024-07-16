@@ -18,10 +18,14 @@ function App() {
     let array:any[] = [], useState(array) || useState<any[]>([])
     any[] no era asignable a never[], se debe especificar el tipado dentro del Hook
   */}
+  
   let [indicators, setIndicators] = useState<any[]>([])
   
-  // 2.1 Variables de estado para dataTable (rangeHours, windDirection)  
+  // 2.1 Variables de estado para dataTable (rangeHours, windDirection)
+
   let [rowsTable, setRowsTable] = useState<any[]>([])
+
+  let[chartData, setChart] = useState<any>([])
 
   {/* Hook: useEffect */}
 
@@ -107,17 +111,49 @@ function App() {
 
       setIndicators(indicatorsElements)
       
+      let xmlArray = xml.getElementsByTagName("time")
+
       // 2.2 Procesamiento de resultados según la estructura del documento XML
-      let arrayObjects = Array.from( xml.getElementsByTagName("time") ).map( (timeElement) =>  {
+      
+      let tableArray = Array.from( xmlArray ).map( (timeElement) =>  {
 
-        let rangeHours = timeElement.getAttribute("from")!.split("T")[1] + " - " + timeElement.getAttribute("to")!.split("T")[1]
-        let windDirection = timeElement.getElementsByTagName("windDirection")[0].getAttribute("deg") + " "+  timeElement.getElementsByTagName("windDirection")[0].getAttribute("code")
+        let rangeHours = timeElement.getAttribute("from")!.split("T")[0] + " " + timeElement.getAttribute("from")!.split("T")[1]
+        let precipitation = timeElement.getElementsByTagName("precipitation")[0].getAttribute("probability")
+        let windDirection = timeElement.getElementsByTagName("windDirection")[0].getAttribute("deg") + " " +  timeElement.getElementsByTagName("windDirection")[0].getAttribute("code")
+        let windSpeed = timeElement.getElementsByTagName("windSpeed")[0].getAttribute("mps")
+        let temperature = Math.round(Number(timeElement.getElementsByTagName("temperature")[0].getAttribute("value")) - 273.15)
+        let humidity = timeElement.getElementsByTagName("humidity")[0].getAttribute("value")
 
-        return { "rangeHours": rangeHours,"windDirection": windDirection }
+        return { 
+          "rangeHours": rangeHours,
+          "precipitation": precipitation,
+          "windDirection": windDirection,
+          "windSpeed": windSpeed,
+          "temperature": temperature,
+          "humidity": humidity,
+        }
       })
 
-      arrayObjects = arrayObjects.slice(0,8)
-      setRowsTable(arrayObjects) // 2.3 Actualización de variable de estado rowsTable
+      tableArray = tableArray.slice(0,10)
+      setRowsTable(tableArray) // 2.3 Actualización de variable de estado rowsTable
+
+      let chartArray = Array. from ( xmlArray ).map((timeElement) => {
+
+        let rangeHours = timeElement.getAttribute("from")!.split("T")[0] + " " + timeElement.getAttribute("from")!.split("T")[1]
+        let precipitation = Number(timeElement.getElementsByTagName("precipitation")[0].getAttribute("probability"))*100
+        let humidity = Number(timeElement.getElementsByTagName("humidity")[0].getAttribute("value"))
+        let clouds = Number(timeElement.getElementsByTagName("clouds")[0].getAttribute("all"))
+
+        return {
+          "rangeHours": rangeHours,
+          "precipitation": precipitation,
+          "humidity": humidity,
+          "clouds": clouds,
+        }
+      })
+
+      chartArray = chartArray.slice(0,8)
+      setChart(chartArray) // 2.3 Actualización de variable de estado chartData
 
     })()
   }, [] )
@@ -160,7 +196,7 @@ function App() {
              <ControlPanel />
       </Grid>
       <Grid xs={12} lg={10}>
-             <WeatherChart></WeatherChart>
+             <WeatherChart info={chartData}></WeatherChart>
       </Grid>
     </Grid>
 

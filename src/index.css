@@ -5,7 +5,7 @@
 
   color-scheme: light dark;
   color: rgba(255, 255, 255, 0.87);
-  background-color: #242424;
+  background-color: lightblue;
 
   font-synthesis: none;
   text-rendering: optimizeLegibility;
@@ -15,7 +15,7 @@
 
 a {
   font-weight: 500;
-  color: #646cff;
+  color: black;
   text-decoration: inherit;
 }
 a:hover {
@@ -24,7 +24,6 @@ a:hover {
 
 body {
   margin: 0;
-  display: flex;
   place-items: center;
   min-width: 320px;
   min-height: 100vh;
@@ -65,4 +64,43 @@ button:focus-visible {
   button {
     background-color: #f9f9f9;
   }
+}
+
+/* Barra de navegación */
+
+nav {
+  position: sticky;
+  top: 0;
+}
+
+ul.myULInicio {
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  background-color: #78a2dd;
+
+  display: inline-block;
+  width: 100%;
+}
+
+ul.myULInicio li {
+  float: left;
+  border-radius: 0%;
+
+}
+
+ul.myULInicio li:last-child {
+  border-right: none;
+}
+
+ul.myULInicio li a {
+  display: block;
+  text-align: center;
+  padding: 14px 16px;
+  text-decoration: none;
+}
+
+ul.myULInicio li a:hover {
+  background-color: lightblue;
 }

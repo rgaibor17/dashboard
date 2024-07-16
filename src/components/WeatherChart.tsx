@@ -1,37 +1,58 @@
 import { Chart } from "react-google-charts";
 import Paper from '@mui/material/Paper';
+import { useState, useEffect } from 'react';
 
-export default function WeatherChart() {
+interface Config {
+    info: Array<object>;
+}
+
+export default function WeatherChart(chartData:Config) {
+
+    let [info, setInfo] = useState<any[]>([])
+
+    useEffect( () => {
+        (()=> {
+        setInfo(chartData.info)
+        })()
+
+    }, [chartData] )
 
     {/* Configuración */}
 
     let options = {
-        title: "Precipitación, Humedad y Nubosidad vs Hora",
+        title: "Reporte de Precipitación, Humedad y Nubosidad vs Hora para Guayaquil en las próximas horas",
         curveType: "function",
         legend: { position: "right" },
     }
 
     {/* Datos de las variables meteorológicas */}
 
+    let infoPoints = info.map((infoPoint) => (
+        [infoPoint.rangeHours, infoPoint.precipitation, infoPoint.humidity, infoPoint.clouds]
+    ))
+
     const data = [
         ["Hora", "Precipitación", "Humedad", "Nubosidad"],
-        ["03:00", 13, 78, 75],
-        ["06:00", 4, 81, 79],
-        ["09:00", 7, 82, 69],
-        ["12:00", 3, 73, 62],
-        ["15:00", 4, 66, 75],
-        ["18:00", 6, 64, 84],
-        ["21:00", 5, 77, 99]
+        infoPoints[0],
+        infoPoints[1],
+        infoPoints[2],
+        infoPoints[3],
+        infoPoints[4],
+        infoPoints[5],
+        infoPoints[6],
+        infoPoints[7],
     ];
 
     {/* JSX */}
 
     return (
         <Paper
+            elevation={3}
             sx={{
                 p: 2,
                 display: 'flex',
-                flexDirection: 'column'
+                flexDirection: 'column',
+                backgroundColor:'lightsteelblue'
             }}
         >
             <Chart
