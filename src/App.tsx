@@ -101,7 +101,7 @@ function App() {
       let tElement = xml.getElementsByTagName("time")[0]
       let maxTemp = Number(tElement.getElementsByTagName("temperature")[0].getAttribute("max"))
       let minTemp = Number(tElement.getElementsByTagName("temperature")[0].getAttribute("min"))
-      let avgTemp = (maxTemp + minTemp)/2
+      let avgTemp = Math.round((maxTemp + minTemp)/2)
       
       dataToIndicators.push([name,"Geobase ID", geobaseid])
       dataToIndicators.push(["Temperatura Máxima", maxTemp+" °K", Math.round(maxTemp - K)+" °C"])
