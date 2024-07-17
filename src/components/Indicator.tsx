@@ -18,7 +18,7 @@ export default function Indicator(config: Config) {
                 background: 'lightsteelblue'
                 }}
         >
-            <Typography component="h2" variant="h6" color="black" gutterBottom>
+            <Typography component="h2" variant="h6" color="blue" gutterBottom>
                 {config.title}
             </Typography>
                 <Typography component="p" variant="h4">

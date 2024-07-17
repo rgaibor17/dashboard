@@ -2,7 +2,7 @@
 // import viteLogo from '/vite.svg'
 import { useEffect, useState } from 'react';
 import './App.css'
-import Grid from '@mui/material/Unstable_Grid2'; // Grid version 2
+import Grid from '@mui/material/Unstable_Grid2/Grid2'; // Grid version 2
 import Indicator from './components/Indicator';
 import Summary from './components/Summary';
 import BasicTable from './components/BasicTable';
@@ -27,6 +27,10 @@ function App() {
 
   let[chartData, setChart] = useState<any>([])
 
+  let[dateData, setDate] = useState<Date>(new Date())
+
+  const K = 273.15
+
   {/* Hook: useEffect */}
 
   {/* Función para el efecto secundario a ejecutar y Arreglo de dependencias */} 
@@ -48,7 +52,9 @@ function App() {
 
       {/* 1.3 Estampa de tiempo actual */}
 
-      let nowTime = (new Date()).getTime();
+      let date = new Date();
+      let nowTime = date.getTime();
+      setDate(date);
 
       {/* 1.4 Se realiza la petición asicrónica cuando: 
           (1) La estampa de tiempo de expiración (expiringTime) es nula, o  
@@ -89,15 +95,19 @@ function App() {
 
       let location = xml.getElementsByTagName("location")[1]
       let name = xml.getElementsByTagName("name")[0].innerHTML
-
       let geobaseid = location.getAttribute("geobaseid")
-      dataToIndicators.push([name,"geobaseid", geobaseid])
-
-      let latitude = location.getAttribute("latitude")
-      dataToIndicators.push([name,"Latitude", latitude])
-
-      let longitude = location.getAttribute("longitude")
-      dataToIndicators.push([name,"Longitude", longitude])
+      let latitude = location.getAttribute("latitude")!
+      let longitude = location.getAttribute("longitude")!
+      let tElement = xml.getElementsByTagName("time")[0]
+      let maxTemp = Number(tElement.getElementsByTagName("temperature")[0].getAttribute("max"))
+      let minTemp = Number(tElement.getElementsByTagName("temperature")[0].getAttribute("min"))
+      let avgTemp = (maxTemp + minTemp)/2
+      
+      dataToIndicators.push([name,"Geobase ID", geobaseid])
+      dataToIndicators.push(["Temperatura Máxima", maxTemp+" °K", Math.round(maxTemp - K)+" °C"])
+      dataToIndicators.push(["Temperatura Mínima",minTemp+" °K", Math.round(minTemp - K)+" °C"])
+      dataToIndicators.push(["Temperatura Promedio",avgTemp+" °K", Math.round(avgTemp - K)+" °C"])
+      dataToIndicators.push(["Latitud y Longitud","0000000000",latitude+"; "+longitude])
 
       console.log( dataToIndicators )
 
@@ -114,14 +124,14 @@ function App() {
       let xmlArray = xml.getElementsByTagName("time")
 
       // 2.2 Procesamiento de resultados según la estructura del documento XML
-      
+
       let tableArray = Array.from( xmlArray ).map( (timeElement) =>  {
 
         let rangeHours = timeElement.getAttribute("from")!.split("T")[0] + " " + timeElement.getAttribute("from")!.split("T")[1]
         let precipitation = timeElement.getElementsByTagName("precipitation")[0].getAttribute("probability")
         let windDirection = timeElement.getElementsByTagName("windDirection")[0].getAttribute("deg") + " " +  timeElement.getElementsByTagName("windDirection")[0].getAttribute("code")
         let windSpeed = timeElement.getElementsByTagName("windSpeed")[0].getAttribute("mps")
-        let temperature = Math.round(Number(timeElement.getElementsByTagName("temperature")[0].getAttribute("value")) - 273.15)
+        let temperature = Math.round(Number(timeElement.getElementsByTagName("temperature")[0].getAttribute("value")) - K)
         let humidity = timeElement.getElementsByTagName("humidity")[0].getAttribute("value")
 
         return { 
@@ -154,15 +164,11 @@ function App() {
 
       chartArray = chartArray.slice(0,8)
       setChart(chartArray) // 2.3 Actualización de variable de estado chartData
-
     })()
   }, [] )
 
   return (
     <Grid container spacing={5}>
-      <Grid xs={12} sm={3} md={3} lg={3}>
-        {indicators[0]}
-      </Grid>
       <Grid xs={12} sm={3} md={3} lg={3}>
         {indicators[1]}
       </Grid>
@@ -170,27 +176,30 @@ function App() {
         {indicators[2]}
       </Grid>
       <Grid xs={12} sm={3} md={3} lg={3}>
-        <Indicator title='Precipitación' subtitle='Probabilidad' value={0.13} />
+        {indicators[3]}
+      </Grid>
+      <Grid xs={12} sm={3} md={3} lg={3}>
+      {indicators[4]}
       </Grid>
 
       <Grid xs={12} sm={2} md={2} lg={2}>
         <Grid xs={12} lg={12} sx={{paddingBottom: "5%"}}>
-          <Indicator title='Precipitación' subtitle='Probabilidad' value={0.13} />
+        {indicators[0]}
         </Grid>
         <Grid lg={12} sx={{paddingBottom: "5%"}}>
-          <Summary/>
+          <Summary date={dateData}/>
         </Grid>
       </Grid>
 
       <Grid xs={12} md={10} lg={10}>
-	       <BasicTable rows={rowsTable}></BasicTable> {/* Variable de estado enviada como prop del componente */}
+	      <BasicTable rows={rowsTable}></BasicTable> {/* Variable de estado enviada como prop del componente */}
       </Grid>
 
       <Grid xs={12} lg={2}>
-             <ControlPanel />
+        <ControlPanel />
       </Grid>
       <Grid xs={12} lg={10}>
-             <WeatherChart info={chartData}></WeatherChart>
+        <WeatherChart info={chartData}></WeatherChart>
       </Grid>
     </Grid>
 
