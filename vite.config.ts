@@ -1,14 +1,11 @@
-import { defineConfig } from 'vite'
-import react from '@vitejs/plugin-react'
-import { viteCommonjs, esbuildCommonjs } from '@originjs/vite-plugin-commonjs';
+import react from "@vitejs/plugin-react";
+import { defineConfig } from "vite";
 
 // https://vitejs.dev/config/
 export default defineConfig({
   plugins: [react()],
   base: "/dashboard",
-  optimizeDeps: {
-    esbuildOptions: {
-      plugins: [esbuildCommonjs(['react-moment'])],
-    },
+  resolve: {
+    mainFields: [],
   },
-})
+});
