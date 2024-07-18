@@ -104,12 +104,11 @@ function App() {
       let avgTemp = Math.round((maxTemp + minTemp)/2)
       
       dataToIndicators.push([name,"Geobase ID", geobaseid])
+      dataToIndicators.push([name,"Longitud", longitude])
       dataToIndicators.push(["Temperatura Máxima", maxTemp+" °K", Math.round(maxTemp - K)+" °C"])
       dataToIndicators.push(["Temperatura Mínima",minTemp+" °K", Math.round(minTemp - K)+" °C"])
       dataToIndicators.push(["Temperatura Promedio",avgTemp+" °K", Math.round(avgTemp - K)+" °C"])
-      dataToIndicators.push(["Latitud y Longitud","0000000000",latitude+"; "+longitude])
-
-      console.log( dataToIndicators )
+      dataToIndicators.push([name,"Latitud", latitude])
 
       {/* Renderice el arreglo de resultados en un arreglo de elementos Indicator */}
 
@@ -169,24 +168,31 @@ function App() {
 
   return (
     <Grid container spacing={5}>
-      <Grid xs={12} sm={3} md={3} lg={3}>
+      <Grid xs={12} sm={12} md={12} lg={3}>
+        <br />
         {indicators[1]}
       </Grid>
-      <Grid xs={12} sm={3} md={3} lg={3}>
-        {indicators[2]}
+      <Grid container spacing={1} xs={12} sm={6} md={6} lg={6}>
+        <Grid xs={12} sm={12} md={12} lg={4}>
+          {indicators[2]}
+        </Grid>
+        <Grid xs={12} sm={12} md={12} lg={4}>
+          {indicators[3]}
+        </Grid>
+        <Grid xs={12} sm={12} md={12} lg={4}>
+          {indicators[4]}
+        </Grid>
       </Grid>
-      <Grid xs={12} sm={3} md={3} lg={3}>
-        {indicators[3]}
-      </Grid>
-      <Grid xs={12} sm={3} md={3} lg={3}>
-      {indicators[4]}
+      <Grid xs={12} sm={12} md={12} lg={3}>
+        <br />
+        {indicators[5]}
       </Grid>
 
-      <Grid xs={12} sm={2} md={2} lg={2}>
+      <Grid xs={12} sm={6} md={2} lg={2}>
         <Grid xs={12} lg={12} sx={{paddingBottom: "5%"}}>
         {indicators[0]}
         </Grid>
-        <Grid lg={12} sx={{paddingBottom: "5%"}}>
+        <Grid lg={12}  sm={6} md={2} sx={{paddingBottom: "5%"}}>
           <Summary date={dateData}/>
         </Grid>
       </Grid>
@@ -202,7 +208,7 @@ function App() {
         <WeatherChart info={chartData}></WeatherChart>
       </Grid>
     </Grid>
-
+    
     /*
       <Grid container spacing={5}>
         <Grid xs={12} sm={4} md={3} lg={2}>1</Grid>

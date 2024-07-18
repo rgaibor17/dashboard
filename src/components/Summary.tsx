@@ -48,7 +48,7 @@ export default function Summary(data:Config) {
     }, [data] )
 
     return (
-        <Card sx={{ maxWidth: 345, backgroundColor:'lightsteelblue'}}>
+        <Card sx={{ maxWidth: 345, backgroundColor:'lightsteelblue'}} elevation={10}>
             <CardActionArea>
                 <CardMedia
                     component="img"

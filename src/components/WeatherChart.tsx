@@ -48,7 +48,7 @@ export default function WeatherChart(chartData:Config) {
 
     return (
         <Paper
-            elevation={3}
+            elevation={10}
             sx={{
                 p: 2,
                 display: 'flex',

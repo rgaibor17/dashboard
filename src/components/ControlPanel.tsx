@@ -49,10 +49,12 @@ export default function ControlPanel() {
 
     return (
         <Paper
+            elevation={10}
             sx={{
                 p: 2,
                 display: 'flex',
-                flexDirection: 'column'
+                flexDirection: 'column',
+                backgroundColor:'lightsteelblue'
             }}
         >
             <Typography mb={2} component="h3" variant="h6" color="primary">

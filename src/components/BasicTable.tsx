@@ -46,7 +46,7 @@ export default function BasicTable(data:Config) {
   }, [data] )
 
   return (
-    <Paper elevation={3} sx={{p: 2, backgroundColor:'lightsteelblue'}}>
+    <Paper elevation={10} sx={{p: 2, backgroundColor:'lightsteelblue'}}>
       <Typography component="h2" variant="h6" color="black">
         {"Reporte del clima para Guayaquil en las próximas horas"}
       </Typography>
